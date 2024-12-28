@@ -8,14 +8,12 @@ const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    // inversion de l'ordre des dates pour avoir les plus récentes en premier  
     new Date(evtA.date) < new Date(evtB.date) ? 1 : -1
   );
 
   const dataLength = data?.focus.length
   const nextCard = () => {
     setTimeout(
-      // Ajout de -1 après "length"
       () => setIndex(index < dataLength - 1 ? index + 1 : 0),
       5000
     );
