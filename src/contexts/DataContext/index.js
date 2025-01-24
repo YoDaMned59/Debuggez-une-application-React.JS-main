@@ -19,18 +19,26 @@ export const api = {
 export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
-  const [last, setLast] = useState(null); // création de la variable "last" 
+  const [last, setLast] = useState(null);
 
   const getData = useCallback(async () => {
     try {
       const jsonData = await api.loadData();
-      setData(jsonData); //
-      const lastEvent = jsonData.events[jsonData.events.length - 1];
-      setLast(lastEvent); // ajout de la dernière prestation
-    } catch (err) {
-      setError(err);
-    }
-  }, []);
+      setData(jsonData);
+
+      const mostRecentEvent = jsonData.events
+      .filter(event => event.date)
+      .reduce((latest, current) => {
+        const currentDate = new Date(current.date);
+        const latestDate = new Date(latest.date);
+        return currentDate > latestDate ? current : latest;
+      });
+
+    setLast(mostRecentEvent);
+  } catch (err) {
+    setError(err);
+  }
+}, []);
 
   useEffect(() => {
     getData();
